@@ -68,7 +68,7 @@ class ViewModelFactoryTest {
 private interface FakeProvideViewModel : ProvideViewModel {
     fun checkCalled(expected : List<Class<out ViewModel>>)
     fun clear(viewModelClass : Class<out ViewModel>)
-    class Base : FakeProvideViewModel {
+    class Base: FakeProvideViewModel {
         private val list = mutableListOf<Class<out ViewModel>>()
         override fun checkCalled(expected: List<Class<out ViewModel>>) {
             assertEquals(expected, list)

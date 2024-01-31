@@ -1,19 +1,30 @@
 package com.example.notesapp.main
 
 import androidx.lifecycle.LiveData
+import com.example.notesapp.list.Order
 import org.junit.Assert.assertEquals
 
 
 interface FakeNavigation : Navigation.Mutable {
-    fun checkUpdateCalled(expected : List<Screen>)
+    interface Update {
+        fun checkUpdateCalled(expected : Screen)
+    }
+    interface Mutable : Update, Navigation.Mutable
 
-    class Base : FakeNavigation {
-        private val callList = mutableListOf<Screen>()
-        override fun checkUpdateCalled(expected: List<Screen>) {
-            assertEquals(expected,callList)
+    companion object {
+        const val NAVIGATE = "Navigation#update"
+    }
+
+    class Base(
+        private val order: Order
+    ) : Mutable {
+        private lateinit var actual : Screen
+        override fun checkUpdateCalled(expected: Screen) {
+            assertEquals(expected,actual)
         }
         override fun update(value : Screen) {
-            callList.add(value)
+            actual = value
+            order.add(NAVIGATE)
         }
         override fun liveData() : LiveData<Screen> {
             throw IllegalStateException("Not used in this test")
