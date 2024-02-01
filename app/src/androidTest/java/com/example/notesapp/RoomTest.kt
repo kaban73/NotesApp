@@ -11,11 +11,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import androidx.room.Room
+import com.example.notesapp.core.NoteCache
+import com.example.notesapp.core.NotesDao
+import com.example.notesapp.core.NotesDataBase
 
 @RunWith(AndroidJUnit4::class)
 class RoomTest {
     private lateinit var db : NotesDataBase
-    private lateinit var notesDao:NotesDao
+    private lateinit var notesDao: NotesDao
     @Before
     fun setup() {
         val context : Context = ApplicationProvider.getApplicationContext()
@@ -35,7 +38,7 @@ class RoomTest {
         notesDao.insert(note = NoteCache(id = 2L, title = "second note" , text = "i am a second note"))
         notesDao.insert(note = NoteCache(id = 3L, title = "third note" , text = "i am a third note"))
 
-        val notesListExpected = listOf<NoteCache>(
+        val notesListExpected = listOf(
             NoteCache(id = 1L, title = "first note" , text = "i am a first note"),
             NoteCache(id = 2L, title = "second note" , text = "i am a second note"),
             NoteCache(id = 3L, title = "third note" , text = "i am a third note")
@@ -46,7 +49,11 @@ class RoomTest {
         notesDao.deleteNote(noteId = 1L)
         notesDao.insert(note = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now"))
 
-        val notesListFinalExpected = listOf<NoteCache>(
+        val expectedNote = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now")
+        val actualNote = notesDao.note(noteId = 2L)
+        assertEquals(expectedNote,actualNote)
+
+        val notesListFinalExpected = listOf(
             NoteCache(id = 2L, title = "new first note" , text = "i am a first note now"),
             NoteCache(id = 3L, title = "third note" , text = "i am a third note")
         )

@@ -7,38 +7,40 @@ import org.junit.Test
 class NotesRepositoryTest {
     private lateinit var now : FakeNow
     private lateinit var notesDao: FakeNotesDao
-    private lateinit var notesRepository : NotesRepository
+    private lateinit var notesRepository : NotesRepository.All
     @Test
     fun test_repository() = runBlocking {
         now = FakeNow.Base(1L)
         notesDao = FakeNotesDao.Base()
-        notesRepository = NotesRepository(
+        notesRepository = NotesRepository.Base(
             now = now,
             notesDao = notesDao
         )
 
-        notesRepository.createNote(
+        val firstNoteId = notesRepository.createNote(
             noteTitle = "first note",
             noteText = "this is a first note!")
-        notesRepository.createNote(
+        val secondNoteId = notesRepository.createNote(
             noteTitle = "second note",
             noteText = "this is a second note!")
+        assertEquals(1L, firstNoteId)
+        assertEquals(2L, secondNoteId)
+
         val notesListActual = notesRepository.notesList()
-        val notesListExpected = listOf<MyNote>(
+        val notesListExpected = listOf(
             MyNote(id = 1L,title = "first note", text = "this is a first note!"),
             MyNote(id = 2L , title ="second note", text = "this is a second note!")
         )
         assertEquals(notesListExpected, notesListActual)
 
         notesRepository.deleteNote(1L)
-        notesRepository.renameNote(id = 2L, newTitle = "i am the first note now!")
-        notesRepository.changeContentNote(id = 2L, newText = "this is a first note now!")
+        notesRepository.editNote(id = 2L, newTitle = "i am the first note now!", newText = "this is a first note now!")
 
-        val notesListActual = notesRepository.notesList()
-        val notesListExpected = listOf<MyNote>(
+        val notesListActual1 = notesRepository.notesList()
+        val notesListExpected1 = listOf(
             MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!")
         )
-        assertEquals(notesListActual,notesListExpected)
+        assertEquals(notesListActual1,notesListExpected1)
 
         val noteActual = notesRepository.note(2L)
         val noteExpected = MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!")
@@ -57,15 +59,15 @@ private interface FakeNow : Now {
 private interface FakeNotesDao : NotesDao {
     class Base : FakeNotesDao {
         private val map = mutableMapOf<Long, NoteCache>()
-        override suspend fun insert(noteCache : NoteCache) {
-            map[noteCache.id] = noteCache
+        override suspend fun insert(note : NoteCache) {
+            map[note.id] = note
         }
         override suspend fun note(noteId : Long) : NoteCache =
-            map[noteId]
+            map[noteId]!!
         override suspend fun notes() : List<NoteCache> =
-            map.map {it.value}.toList
-        override suspend fun delete(noteId : Long) =
+            map.map {it.value}.toList().sortedBy { it.id }
+        override suspend fun deleteNote(noteId : Long) {
             map.remove(noteId)
-
+        }
     }
 }
