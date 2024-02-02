@@ -17,7 +17,8 @@ interface FakeClearViewModel : ClearViewModel {
             assertEquals(expected,actualList)
         }
         override fun clear(viewModelClass : Class<out ViewModel>) {
-            actualList.remove(viewModelClass)
+            actualList.clear()
+            actualList.addAll(listOf(viewModelClass))
             order.add(CLEAR)
         }
     }

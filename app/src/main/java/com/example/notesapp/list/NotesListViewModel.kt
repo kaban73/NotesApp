@@ -1,5 +1,6 @@
 package com.example.notesapp.list
 
+import androidx.lifecycle.ViewModel
 import com.example.notesapp.core.NotesRepository
 import com.example.notesapp.create.CreateNoteScreen
 import com.example.notesapp.edit.EditNoteScreen
@@ -19,7 +20,7 @@ class NotesListViewModel(
     private val navigation: Navigation.Update,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val dispatcherMain : CoroutineDispatcher = Dispatchers.Main
-) {
+)  :ViewModel() {
     fun init() {
         viewModelScope.launch(dispatcher) {
         val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
