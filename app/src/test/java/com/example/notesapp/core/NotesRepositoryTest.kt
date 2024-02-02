@@ -34,7 +34,7 @@ class NotesRepositoryTest {
         assertEquals(notesListExpected, notesListActual)
 
         notesRepository.deleteNote(1L)
-        notesRepository.editNote(id = 2L, newTitle = "i am the first note now!", newText = "this is a first note now!")
+        notesRepository.editNote(noteId = 2L, newTitle = "i am the first note now!", newText = "this is a first note now!")
 
         val notesListActual1 = notesRepository.notesList()
         val notesListExpected1 = listOf(

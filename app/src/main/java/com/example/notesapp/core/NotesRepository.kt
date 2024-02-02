@@ -7,14 +7,14 @@ interface NotesRepository  {
     interface ReadList {
         suspend fun notesList(): List<MyNote>
     }
-    interface Read : ReadList {
+    interface ReadNote {
         suspend fun note(noteId: Long): MyNote
     }
-    interface Edit {
+    interface Edit  :ReadNote {
         suspend fun deleteNote(noteId: Long)
-        suspend fun editNote(id: Long, newTitle: String, newText: String)
+        suspend fun editNote(noteId: Long, newTitle: String, newText: String)
     }
-    interface Mutable : Create, Read
+    interface Mutable : Create, ReadList
     interface All : Mutable, Edit
     class Base(
         private val now: Now,
@@ -36,8 +36,8 @@ interface NotesRepository  {
             notesDao.deleteNote(noteId)
         }
 
-        override suspend fun editNote(id: Long, newTitle: String, newText: String) {
-            notesDao.insert(NoteCache(id,newTitle,newText))
+        override suspend fun editNote(noteId: Long, newTitle: String, newText: String) {
+            notesDao.insert(NoteCache(noteId,newTitle,newText))
         }
     }
 }
