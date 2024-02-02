@@ -4,8 +4,10 @@ interface NotesRepository  {
     interface Create {
         suspend fun createNote(noteTitle: String, noteText: String) : Long
     }
-    interface Read {
+    interface ReadList {
         suspend fun notesList(): List<MyNote>
+    }
+    interface Read : ReadList {
         suspend fun note(noteId: Long): MyNote
     }
     interface Edit {
