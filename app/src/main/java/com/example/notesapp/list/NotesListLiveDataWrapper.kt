@@ -23,7 +23,7 @@ interface NotesListLiveDataWrapper {
         }
 
         override fun update(noteId: Long, newTitle: String, newText: String) {
-            val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
                 .format(Date())
             val updateNote = NoteUi(noteId,newTitle,newText, currentDate)
             val list = liveData.value?.toMutableList() ?: ArrayList()

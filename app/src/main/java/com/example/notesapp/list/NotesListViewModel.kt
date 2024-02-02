@@ -1,5 +1,6 @@
 package com.example.notesapp.list
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.notesapp.core.NotesRepository
 import com.example.notesapp.create.CreateNoteScreen
@@ -11,8 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class NotesListViewModel(
     private val notesRepository: NotesRepository.ReadList,
@@ -20,12 +19,10 @@ class NotesListViewModel(
     private val navigation: Navigation.Update,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val dispatcherMain : CoroutineDispatcher = Dispatchers.Main
-)  :ViewModel() {
+)  :ViewModel(), NotesListLiveDataWrapper.Read {
     fun init() {
         viewModelScope.launch(dispatcher) {
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            .format(Date())
-            val list = notesRepository.notesList().map { NoteUi(it.id,it.title,it.text, currentDate) }
+            val list = notesRepository.notesList().map { NoteUi(it.id,it.title,it.text, it.lastDate) }
             withContext(dispatcherMain){
                 notesListLiveDataWrapper.update(list)
             }
@@ -41,5 +38,7 @@ class NotesListViewModel(
     }
 
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    override fun liveData(): LiveData<List<NoteUi>> =
+        notesListLiveDataWrapper.liveData()
 
 }

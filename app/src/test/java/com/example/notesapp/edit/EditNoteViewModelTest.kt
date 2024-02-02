@@ -14,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class EditNoteViewModelTest {
     private lateinit var order: Order
@@ -47,7 +49,9 @@ class EditNoteViewModelTest {
         viewModel.init(noteId = 1L)
 
         repository.checkNote(1L)
-        noteLiveDataWrapper.check(MyNote(id = 1L, title = "first note", text = "i am a first note"))
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
+        noteLiveDataWrapper.check(MyNote(id = 1L, title = "first note", text = "i am a first note", lastDate = currentDate))
         order.check(listOf(REPOSITORY_NOTE, NOTE_LIVE_DATA))
     }
     @Test
@@ -93,8 +97,8 @@ private interface FakeNoteLiveDataWrapper : NoteLiveDataWrapper.Mutable {
         override fun liveData() : LiveData<MyNote> {
             throw IllegalStateException("Don't use in Unit Test")
         }
-        override fun update(myNote : MyNote) {
-            actual = myNote
+        override fun update(value : MyNote) {
+            actual = value
             order.add(NOTE_LIVE_DATA)
         }
     }
@@ -139,7 +143,9 @@ private interface FakeEditNoteRepository : NotesRepository.Edit {
         override suspend fun note(noteId: Long) : MyNote {
             actualId = noteId
             order.add(REPOSITORY_NOTE)
-            return MyNote(id = noteId, title = "first note", text = "i am a first note")
+            val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+                .format(Date())
+            return MyNote(id = noteId, title = "first note", text = "i am a first note", lastDate = currentDate)
         }
     }
 }

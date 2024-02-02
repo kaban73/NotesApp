@@ -7,5 +7,5 @@ interface NoteLiveDataWrapper {
     interface Read : LiveDataWrapper.Read<MyNote>
     interface Update : LiveDataWrapper.Update<MyNote>
     interface Mutable : Read,Update
-    class Base : LiveDataWrapper.Abstract<MyNote>()
+    class Base : LiveDataWrapper.Abstract<MyNote>(), Mutable
 }

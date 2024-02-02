@@ -1,5 +1,8 @@
 package com.example.notesapp.core
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 interface NotesRepository  {
     interface Create {
         suspend fun createNote(noteTitle: String, noteText: String) : Long
@@ -22,22 +25,26 @@ interface NotesRepository  {
     ) : All {
         override suspend fun createNote(noteTitle: String, noteText: String) : Long {
             val id = now.timeInMillis()
-            notesDao.insert(NoteCache(id, noteTitle, noteText))
+            val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+                .format(Date())
+            notesDao.insert(NoteCache(id, noteTitle, noteText, currentDate))
             return id
         }
 
         override suspend fun notesList(): List<MyNote> =
-            notesDao.notes().map { MyNote(it.id,it.title,it.text) }
+            notesDao.notes().map { MyNote(it.id,it.title,it.text, it.lastDate) }
 
         override suspend fun note(noteId: Long): MyNote =
-            notesDao.note(noteId).let { MyNote(it.id,it.title,it.text) }
+            notesDao.note(noteId).let { MyNote(it.id,it.title,it.text, it.lastDate) }
 
         override suspend fun deleteNote(noteId: Long) {
             notesDao.deleteNote(noteId)
         }
 
         override suspend fun editNote(noteId: Long, newTitle: String, newText: String) {
-            notesDao.insert(NoteCache(noteId,newTitle,newText))
+            val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+                .format(Date())
+            notesDao.insert(NoteCache(noteId,newTitle,newText,currentDate))
         }
     }
 }

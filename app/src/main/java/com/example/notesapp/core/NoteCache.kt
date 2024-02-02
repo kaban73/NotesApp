@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class NoteCache(
     @PrimaryKey @ColumnInfo(name = "id") val id : Long,
     @ColumnInfo(name = "title") val title : String,
-    @ColumnInfo(name = "text") val text : String
+    @ColumnInfo(name = "text") val text : String,
+    @ColumnInfo(name = "last_date") val lastDate : String
 )

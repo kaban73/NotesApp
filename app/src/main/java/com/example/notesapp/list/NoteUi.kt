@@ -1,15 +1,11 @@
 package com.example.notesapp.list
 
 import android.widget.TextView
-import java.text.SimpleDateFormat
-import java.util.Date
-
 data class NoteUi(
     val id : Long,
     val title : String,
     val text : String,
-    val lastDate : String = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-.format(Date())
+    val lastDate : String
 ) {
     fun areItemsTheSame(noteUi: NoteUi) = id == noteUi.id
     fun areContentTheSame(noteUi: NoteUi) = title == noteUi.title && text == noteUi.text

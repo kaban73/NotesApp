@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class NotesListViewModelTest {
     private lateinit var notesViewModel : NotesListViewModel
@@ -35,17 +37,19 @@ class NotesListViewModelTest {
 
     @Test
     fun test_init() {
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
         notesRepository.expectNotes(
             listOf(
-                MyNote(id = 1L, title = "first note", text = "this is a first note!"),
-                MyNote(id = 2L, title = "second note", text = "this is a second note!")
+                MyNote(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate),
+                MyNote(id = 2L, title = "second note", text = "this is a second note!", lastDate = currentDate)
             )
         )
         notesViewModel.init()
         notesListLiveDataWrapper.checkCalledList(
             listOf(
-                NoteUi(id = 1L, title = "first note", text = "this is a first note!"),
-                NoteUi(id = 2L, title = "second note", text = "this is a second note!")
+                NoteUi(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate),
+                NoteUi(id = 2L, title = "second note", text = "this is a second note!", lastDate = currentDate)
             )
         )
         order.check(listOf(NOTES_REPOSITORY_READ, UPDATE_NOTES_LIVEDATA))
@@ -58,14 +62,18 @@ class NotesListViewModelTest {
     }
     @Test
     fun test_edit_note() {
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
         notesRepository.expectNotes(
             listOf(
-                MyNote(id = 1L, title = "first note", text = "this is a first note!"),
-                MyNote(id = 2L, title = "second note", text = "this is a second note!")
+                MyNote(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate),
+                MyNote(id = 2L, title = "second note", text = "this is a second note!", lastDate = currentDate)
             )
         )
+        val currentDate2 = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
         notesViewModel.editNote(noteUi =
-        NoteUi(id = 1L, title = "first note", text = "this is a first note!"))
+        NoteUi(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate2))
         navigation.checkUpdateCalled(EditNoteScreen(noteId = 1L))
         order.check(listOf(NAVIGATE))
     }
@@ -84,9 +92,9 @@ interface FakeNotesListLiveDataWrapper : NotesListLiveDataWrapper.Mutable{
         override fun liveData() : LiveData<List<NoteUi>> {
             throw IllegalStateException("Not used in this test")
         }
-        override fun update(newList : List<NoteUi>) {
+        override fun update(value : List<NoteUi>) {
             actualList.clear()
-            actualList.addAll(newList)
+            actualList.addAll(value)
             order.add(UPDATE_NOTES_LIVEDATA)
         }
     }
@@ -102,9 +110,9 @@ private interface FakeNotesRepository : NotesRepository.ReadList {
             order.add(NOTES_REPOSITORY_READ)
             return list
         }
-        override fun expectNotes(newList: List<MyNote>) {
-            list.clear()
-            list.addAll(newList)
+        override fun expectNotes(list: List<MyNote>) {
+            this.list.clear()
+            this.list.addAll(list)
         }
     }
 }

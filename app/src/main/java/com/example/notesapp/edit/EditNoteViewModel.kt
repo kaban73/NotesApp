@@ -1,7 +1,9 @@
 package com.example.notesapp.edit
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.notesapp.core.ClearViewModel
+import com.example.notesapp.core.MyNote
 import com.example.notesapp.core.NotesRepository
 import com.example.notesapp.list.NotesListLiveDataWrapper
 import com.example.notesapp.list.NotesListScreen
@@ -21,7 +23,7 @@ class EditNoteViewModel(
     private val clear: ClearViewModel,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val dispatcherMain : CoroutineDispatcher = Dispatchers.Main
-) : ViewModel() {
+) : ViewModel(), NoteLiveDataWrapper.Read {
     fun init(noteId: Long) {
         viewModelScope.launch(dispatcher) {
             val note = repository.note(noteId)
@@ -56,4 +58,6 @@ class EditNoteViewModel(
     }
 
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    override fun liveData(): LiveData<MyNote> =
+        noteLiveDataWrapper.liveData()
 }

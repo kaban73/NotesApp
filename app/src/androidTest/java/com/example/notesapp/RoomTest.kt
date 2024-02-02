@@ -14,6 +14,8 @@ import androidx.room.Room
 import com.example.notesapp.core.NoteCache
 import com.example.notesapp.core.NotesDao
 import com.example.notesapp.core.NotesDataBase
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
 class RoomTest {
@@ -34,28 +36,32 @@ class RoomTest {
     }
     @Test
     fun test_folders() = runBlocking {
-        notesDao.insert(note = NoteCache(id = 1L, title = "first note" , text = "i am a first note"))
-        notesDao.insert(note = NoteCache(id = 2L, title = "second note" , text = "i am a second note"))
-        notesDao.insert(note = NoteCache(id = 3L, title = "third note" , text = "i am a third note"))
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
+        notesDao.insert(note = NoteCache(id = 1L, title = "first note" , text = "i am a first note", lastDate = currentDate))
+        notesDao.insert(note = NoteCache(id = 2L, title = "second note" , text = "i am a second note", lastDate = currentDate))
+        notesDao.insert(note = NoteCache(id = 3L, title = "third note" , text = "i am a third note", lastDate = currentDate))
 
         val notesListExpected = listOf(
-            NoteCache(id = 1L, title = "first note" , text = "i am a first note"),
-            NoteCache(id = 2L, title = "second note" , text = "i am a second note"),
-            NoteCache(id = 3L, title = "third note" , text = "i am a third note")
+            NoteCache(id = 1L, title = "first note" , text = "i am a first note", lastDate = currentDate),
+            NoteCache(id = 2L, title = "second note" , text = "i am a second note", lastDate = currentDate),
+            NoteCache(id = 3L, title = "third note" , text = "i am a third note", lastDate = currentDate)
         )
         val notesListActual = notesDao.notes()
         assertEquals(notesListExpected,notesListActual)
 
         notesDao.deleteNote(noteId = 1L)
-        notesDao.insert(note = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now"))
+        val currentDate2 = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
+        notesDao.insert(note = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now", lastDate = currentDate2))
 
-        val expectedNote = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now")
+        val expectedNote = NoteCache(id = 2L, title = "new first note" , text = "i am a first note now", lastDate = currentDate2)
         val actualNote = notesDao.note(noteId = 2L)
         assertEquals(expectedNote,actualNote)
 
         val notesListFinalExpected = listOf(
-            NoteCache(id = 2L, title = "new first note" , text = "i am a first note now"),
-            NoteCache(id = 3L, title = "third note" , text = "i am a third note")
+            NoteCache(id = 2L, title = "new first note" , text = "i am a first note now", lastDate = currentDate2),
+            NoteCache(id = 3L, title = "third note" , text = "i am a third note", lastDate = currentDate)
         )
         val notesListFinalActual = notesDao.notes()
         assertEquals(notesListFinalExpected,notesListFinalActual)

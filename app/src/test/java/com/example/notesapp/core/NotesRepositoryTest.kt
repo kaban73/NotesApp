@@ -3,6 +3,8 @@ package com.example.notesapp.core
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class NotesRepositoryTest {
     private lateinit var now : FakeNow
@@ -27,9 +29,11 @@ class NotesRepositoryTest {
         assertEquals(2L, secondNoteId)
 
         val notesListActual = notesRepository.notesList()
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
+            .format(Date())
         val notesListExpected = listOf(
-            MyNote(id = 1L,title = "first note", text = "this is a first note!"),
-            MyNote(id = 2L , title ="second note", text = "this is a second note!")
+            MyNote(id = 1L,title = "first note", text = "this is a first note!", lastDate = currentDate),
+            MyNote(id = 2L , title ="second note", text = "this is a second note!", lastDate = currentDate)
         )
         assertEquals(notesListExpected, notesListActual)
 
@@ -38,12 +42,12 @@ class NotesRepositoryTest {
 
         val notesListActual1 = notesRepository.notesList()
         val notesListExpected1 = listOf(
-            MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!")
+            MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!", lastDate = currentDate)
         )
         assertEquals(notesListActual1,notesListExpected1)
 
         val noteActual = notesRepository.note(2L)
-        val noteExpected = MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!")
+        val noteExpected = MyNote(id = 2L , title ="i am the first note now!", text = "this is a first note now!", lastDate = currentDate)
         assertEquals(noteExpected, noteActual)
     }
 }

@@ -28,7 +28,7 @@ class CreateNoteViewModel(
         viewModelScope.launch(dispatcher) {
             val id = notesRepository.createNote(title,text)
             withContext(dispatcherMain) {
-                val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
                     .format(Date())
                 addNoteLiveDataWrapper.create(NoteUi(id,title,text, currentDate))
                 comeback()

@@ -31,7 +31,7 @@ class NotesAppTest {
 
         createNotePage.clickSaveButton()
         createNotePage.checkNotVisibleNow()
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "first note", date = currentDate)
         notesListPage.checkVisibleNow()
@@ -60,7 +60,7 @@ class NotesAppTest {
 
         createNotePage.clickSaveButton()
         createNotePage.checkNotVisibleNow()
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "first note", date = currentDate)
         notesListPage.checkVisibleNow()
@@ -76,7 +76,7 @@ class NotesAppTest {
         editNotePage.clickSaveButton()
 
         editNotePage.checkNotVisibleNow()
-        val lastCurrentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val lastCurrentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "second note", date = lastCurrentDate)
         notesListPage.checkVisibleNow()
@@ -88,7 +88,7 @@ class NotesAppTest {
         Espresso.pressBack()
 
         editNotePage.checkNotVisibleNow()
-        val lastCurrentDate1 = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val lastCurrentDate1 = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "second note", date = lastCurrentDate1)
         notesListPage.checkVisibleNow()
@@ -109,7 +109,7 @@ class NotesAppTest {
 
         createNotePage.clickSaveButton()
         createNotePage.checkNotVisibleNow()
-        val currentDate1 = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate1 = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "first note", date = currentDate1)
         notesListPage.checkVisibleNow()
@@ -124,7 +124,7 @@ class NotesAppTest {
 
         createNotePage.clickSaveButton()
         createNotePage.checkNotVisibleNow()
-        val currentDate2 = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate2 = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
         notesListPage.checkNote(position = 0, title = "first note", date = currentDate1)
         notesListPage.checkNote(position = 1, title = "second note", date = currentDate2)
