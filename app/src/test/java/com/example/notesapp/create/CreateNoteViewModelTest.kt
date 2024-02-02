@@ -13,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class CreateNoteViewModelTest {
     private lateinit var order: Order
@@ -43,10 +41,8 @@ class CreateNoteViewModelTest {
     fun test_create() {
         viewModel.createNote(title = "new note", text = "I am a new note")
 
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            .format(Date())
         notesRepository.check("new note","I am a new note")
-        addNoteLiveDataWrapper.check(NoteUi(id = 1L, title = "new note", text = "I am a new note", lastDate = currentDate))
+        addNoteLiveDataWrapper.check(NoteUi(id = 1L, title = "new note", text = "I am a new note"))
         clear.check(listOf(CreateNoteViewModel::class.java))
         navigation.checkUpdateCalled(NotesListScreen)
         order.check(listOf(CREATE_NOTE_REPOSITORY, NOTE_LIST_LIVEDATA_ADD, CLEAR,NAVIGATE))

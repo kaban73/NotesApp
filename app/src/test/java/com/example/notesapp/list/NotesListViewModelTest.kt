@@ -11,8 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class NotesListViewModelTest {
     private lateinit var notesViewModel : NotesListViewModel
@@ -44,12 +42,10 @@ class NotesListViewModelTest {
             )
         )
         notesViewModel.init()
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            .format(Date())
         notesListLiveDataWrapper.checkCalledList(
             listOf(
-                NoteUi(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate),
-                NoteUi(id = 2L, title = "second note", text = "this is a second note!", lastDate = currentDate)
+                NoteUi(id = 1L, title = "first note", text = "this is a first note!"),
+                NoteUi(id = 2L, title = "second note", text = "this is a second note!")
             )
         )
         order.check(listOf(NOTES_REPOSITORY_READ, UPDATE_NOTES_LIVEDATA))
@@ -68,10 +64,8 @@ class NotesListViewModelTest {
                 MyNote(id = 2L, title = "second note", text = "this is a second note!")
             )
         )
-        val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            .format(Date())
         notesViewModel.editNote(noteUi =
-        NoteUi(id = 1L, title = "first note", text = "this is a first note!", lastDate = currentDate))
+        NoteUi(id = 1L, title = "first note", text = "this is a first note!"))
         navigation.checkUpdateCalled(EditNoteScreen(noteId = 1L))
         order.check(listOf(NAVIGATE))
     }

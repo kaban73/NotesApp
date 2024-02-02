@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/editNoteLayout"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_note"
+        android:id="@+id/editNoteTextView"
+        android:textSize="32sp"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/noteTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="@string/title"
+        android:padding="8dp"
+        android:textSize="22sp"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/noteTextEditText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="start|top|center_vertical"
+        android:layout_weight="1"
+        android:background="@android:drawable/editbox_background"
+        android:gravity="start|top"
+        android:hint="@string/your_note"
+        android:padding="8dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/saveNoteButton"
+        android:textSize="22sp"
+        android:padding="8dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:id="@+id/deleteNoteButton"
+        android:textSize="22sp"
+        android:padding="8dp"/>
 
 </LinearLayout>
