@@ -1,5 +1,6 @@
 package com.example.notesapp.create
 
+import androidx.lifecycle.LiveData
 import com.example.notesapp.core.FakeClearViewModel
 import com.example.notesapp.core.FakeClearViewModel.Companion.CLEAR
 import com.example.notesapp.core.NotesRepository
@@ -20,6 +21,7 @@ class CreateNoteViewModelTest {
     private lateinit var order: Order
     private lateinit var notesRepository: FakeCreateNoteRepository
     private lateinit var addNoteLiveDataWrapper: FakeAddNoteLiveDataWrapper
+    private lateinit var createNoteLiveDataWrapper: FakeCreateNoteLiveDataWrapper
     private lateinit var navigation: FakeNavigation.Update
     private lateinit var clear : FakeClearViewModel
     private lateinit var viewModel: CreateNoteViewModel
@@ -28,10 +30,12 @@ class CreateNoteViewModelTest {
         order = Order()
         notesRepository = FakeCreateNoteRepository.Base(order,1L)
         addNoteLiveDataWrapper = FakeAddNoteLiveDataWrapper.Base(order)
+        createNoteLiveDataWrapper = FakeCreateNoteLiveDataWrapper.Base(order)
         navigation = FakeNavigation.Base(order)
         clear = FakeClearViewModel.Base(order)
         viewModel = CreateNoteViewModel(
             addNoteLiveDataWrapper = addNoteLiveDataWrapper,
+            createNoteLiveDataWrapper = createNoteLiveDataWrapper,
             notesRepository = notesRepository,
             navigation = navigation as FakeNavigation.Base,
             clear = clear,
@@ -49,19 +53,55 @@ class CreateNoteViewModelTest {
         addNoteLiveDataWrapper.check(NoteUi(id = 1L, title = "new note", text = "I am a new note", lastDate = currentDate))
         clear.check(listOf(CreateNoteViewModel::class.java))
         navigation.checkUpdateCalled(NotesListScreen)
-        order.check(listOf(CREATE_NOTE_REPOSITORY, NOTE_LIST_LIVEDATA_ADD, CLEAR,NAVIGATE))
+        order.check(listOf(CREATE_NOTE_REPOSITORY, NOTE_LIST_LIVEDATA_ADD, CREATE_NOTE_LIVEDATA_CLEAR, CLEAR,NAVIGATE))
+    }
+    @Test
+    fun test_restore_note() {
+        val savePair = Pair("restore note", "I am a restore note")
+        viewModel.save(title = savePair.first, text = savePair.second)
+
+        createNoteLiveDataWrapper.check(savePair)
+        order.check(listOf(CREATE_NOTE_LIVEDATA_UPDATE))
     }
     @Test
     fun comeback() {
         viewModel.comeback()
 
+        createNoteLiveDataWrapper.check(Pair("",""))
         clear.check(listOf(CreateNoteViewModel::class.java))
         navigation.checkUpdateCalled(NotesListScreen)
-        order.check(listOf(CLEAR,NAVIGATE))
+        order.check(listOf(CREATE_NOTE_LIVEDATA_CLEAR ,CLEAR,NAVIGATE))
     }
 }
 private const val NOTE_LIST_LIVEDATA_ADD = "NotesListLiveDataWrapper.Create"
 private const val CREATE_NOTE_REPOSITORY = "NotesRepository.Create#createNote"
+private const val CREATE_NOTE_LIVEDATA_UPDATE = "CreateNoteLiveData#update"
+private const val CREATE_NOTE_LIVEDATA_CLEAR = "CreateNoteLiveData#clear"
+
+private interface FakeCreateNoteLiveDataWrapper : CreateNoteLiveDataWrapper.All {
+    fun check(expected: Pair<String, String>)
+    class Base(
+        private val order: Order
+    ) : FakeCreateNoteLiveDataWrapper {
+        private var actualPair = Pair("","")
+        override fun check(expected: Pair<String, String>) {
+            assertEquals(expected, actualPair)
+        }
+
+        override fun liveData(): LiveData<Pair<String, String>> {
+            throw IllegalStateException("Don't use in Unit Test")
+        }
+
+        override fun update(value: Pair<String, String>) {
+            actualPair = value
+            order.add(CREATE_NOTE_LIVEDATA_UPDATE)
+        }
+
+        override fun clear() {
+            order.add(CREATE_NOTE_LIVEDATA_CLEAR)
+        }
+    }
+}
 private interface FakeAddNoteLiveDataWrapper : NotesListLiveDataWrapper.Create {
     fun check(expected : NoteUi)
     class Base(

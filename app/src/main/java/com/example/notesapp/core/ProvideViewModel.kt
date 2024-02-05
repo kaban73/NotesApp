@@ -1,6 +1,7 @@
 package com.example.notesapp.core
 
 import androidx.lifecycle.ViewModel
+import com.example.notesapp.create.CreateNoteLiveDataWrapper
 import com.example.notesapp.create.CreateNoteViewModel
 import com.example.notesapp.edit.EditNoteViewModel
 import com.example.notesapp.edit.NoteLiveDataWrapper
@@ -19,10 +20,11 @@ interface ProvideViewModel {
         private val notesListLiveDataWrapper = NotesListLiveDataWrapper.Base()
         private val notesRepository = NotesRepository.Base(Now.Base(), core.notesDao())
         private val noteLiveDataWrapper = NoteLiveDataWrapper.Base()
+        private val createNoteLiveDataWrapper = CreateNoteLiveDataWrapper.Base()
         override fun <T : ViewModel> viewModel(viewModelClass: Class<T>): T = when(viewModelClass) {
             MainViewModel::class.java->MainViewModel(navigation)
             NotesListViewModel::class.java->NotesListViewModel(notesRepository,notesListLiveDataWrapper, navigation)
-            CreateNoteViewModel::class.java->CreateNoteViewModel(notesListLiveDataWrapper,notesRepository,navigation,clearViewModel)
+            CreateNoteViewModel::class.java->CreateNoteViewModel(notesListLiveDataWrapper, createNoteLiveDataWrapper, notesRepository,navigation,clearViewModel)
             EditNoteViewModel::class.java->EditNoteViewModel(noteLiveDataWrapper,notesListLiveDataWrapper,notesRepository,navigation,clearViewModel)
             else -> throw IllegalStateException("unknown viewModelClass $viewModelClass")
         } as T

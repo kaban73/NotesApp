@@ -24,11 +24,28 @@ class EditNoteViewModel(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val dispatcherMain : CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel(), NoteLiveDataWrapper.Read {
+    private var title = ""
+    private var text = ""
+    private var isFirstRun = true
+    fun save(newTitle: String, newText: String) {
+        title = newTitle
+        text = newText
+        isFirstRun = false
+    }
+    private fun restore() {
+        noteLiveDataWrapper.liveData().value?.let {
+            val restoreNote = MyNote(it.id,title,text,it.lastDate)
+            noteLiveDataWrapper.update(restoreNote)
+        }
+    }
     fun init(noteId: Long) {
         viewModelScope.launch(dispatcher) {
             val note = repository.note(noteId)
             withContext(dispatcherMain) {
-                noteLiveDataWrapper.update(note)
+                if (isFirstRun)
+                    noteLiveDataWrapper.update(note)
+                else
+                    restore()
             }
         }
     }

@@ -30,6 +30,16 @@ class CreateNoteFragment : AbstractFragment<NoteCreateLayoutBinding>() {
             val textText = binding.createNoteTextEditText.text.toString()
             viewModel.createNote(titleText,textText)
         }
+        viewModel.liveData().observe(viewLifecycleOwner) {
+            binding.createNoteTitleEditText.setText(it.first)
+            binding.createNoteTextEditText.setText(it.second)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.save(binding.createNoteTitleEditText.text.toString(),
+            binding.createNoteTextEditText.text.toString())
     }
 
     override fun onDestroyView() {

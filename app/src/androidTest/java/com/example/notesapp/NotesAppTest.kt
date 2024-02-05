@@ -16,7 +16,7 @@ class NotesAppTest {
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
     @Test
-    fun create_note_and_back() {
+    fun create_note_recreate_and_back() {
         val notesListPage = NotesListPage()
         notesListPage.checkVisibleNow()
 
@@ -26,22 +26,27 @@ class NotesAppTest {
         val createNotePage = CreateNotePage()
         createNotePage.checkVisibleNow()
 
-        createNotePage.inputNoteTitle(title = "first note")
-        createNotePage.inputNoteText(text = "i am a first note")
+        val title = "first note"
+        val text = "i am a first note"
+        createNotePage.inputNoteTitle(title = title)
+        createNotePage.inputNoteText(text = text)
+        activityScenarioRule.scenario.recreate()
+        createNotePage.checkEditNote(title, text)
 
         createNotePage.clickSaveButton()
         createNotePage.checkNotVisibleNow()
         val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm")
             .format(Date())
-        notesListPage.checkNote(position = 0, title = "first note", date = currentDate)
+        notesListPage.checkNote(position = 0, title = title, date = currentDate)
         notesListPage.checkVisibleNow()
 
         notesListPage.clickAddButton()
         notesListPage.checkNotVisibleNow()
 
         createNotePage.checkVisibleNow()
+        createNotePage.checkEditNote("", "")
         Espresso.pressBack()
-        notesListPage.checkNote(position = 0, title = "first note", date = currentDate)
+        notesListPage.checkNote(position = 0, title = title, date = currentDate)
         notesListPage.checkVisibleNow()
     }
     @Test
@@ -73,6 +78,9 @@ class NotesAppTest {
             text = "i am a first note")
 
         editNotePage.replaceText(title = "second note", text = "i am a second note now")
+        activityScenarioRule.scenario.recreate()
+        editNotePage.checkVisibleNow(title = "second note", text = "i am a second note now")
+
         editNotePage.clickSaveButton()
 
         editNotePage.checkNotVisibleNow()
@@ -84,6 +92,8 @@ class NotesAppTest {
         notesListPage.clickNoteAt(0)
         notesListPage.checkNotVisibleNow()
 
+        editNotePage.checkVisibleNow(title = "second note", text = "i am a second note now")
+        activityScenarioRule.scenario.recreate()
         editNotePage.checkVisibleNow(title = "second note", text = "i am a second note now")
         Espresso.pressBack()
 
@@ -141,5 +151,7 @@ class NotesAppTest {
         editNotePage.checkNotVisibleNow()
         notesListPage.checkNote(position = 0, title = "second note", date = currentDate2)
         notesListPage.checkVisibleNow()
+        activityScenarioRule.scenario.recreate()
+        notesListPage.checkNote(position = 0, title = "second note", date = currentDate2)
     }
 }

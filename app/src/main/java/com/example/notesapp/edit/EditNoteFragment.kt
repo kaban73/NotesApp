@@ -32,11 +32,6 @@ class EditNoteFragment : AbstractFragment<NoteEditLayoutBinding>() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val noteId = requireArguments().getLong(KEY)
@@ -62,7 +57,8 @@ class EditNoteFragment : AbstractFragment<NoteEditLayoutBinding>() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
+        viewModel.save(binding.noteTitleEditText.text.toString(),
+            binding.noteTextEditText.text.toString())
     }
 
     override fun onDestroyView() {

@@ -28,28 +28,27 @@ class CreateNotePage {
             withText("Create note:")
         )
     )
-    fun checkVisibleNow() {
-        title().check(matches(isDisplayed()))
-    }
+    private fun editTitle() = onView(
+        allOf(
+            withParent(isAssignableFrom(LinearLayout::class.java)),
+            withParent(withId(rootId)),
+            isAssignableFrom(TextInputEditText::class.java),
+            withId(R.id.createNoteTitleEditText)
+        )
+    )
+    private fun editText() = onView(
+        allOf(
+            withParent(isAssignableFrom(LinearLayout::class.java)),
+            withParent(withId(rootId)),
+            isAssignableFrom(TextInputEditText::class.java),
+            withId(R.id.createNoteTextEditText)
+        )
+    )
     fun inputNoteTitle(title : String) {
-        onView(
-            allOf(
-                withParent(isAssignableFrom(LinearLayout::class.java)),
-                withParent(withId(rootId)),
-                isAssignableFrom(TextInputEditText::class.java),
-                withId(R.id.createNoteTitleEditText)
-            )
-        ).perform(typeText(title), closeSoftKeyboard())
+        editTitle().perform(typeText(title), closeSoftKeyboard())
     }
     fun inputNoteText(text : String) {
-        onView(
-            allOf(
-                withParent(isAssignableFrom(LinearLayout::class.java)),
-                withParent(withId(rootId)),
-                isAssignableFrom(TextInputEditText::class.java),
-                withId(R.id.createNoteTextEditText)
-            )
-        ).perform(typeText(text), closeSoftKeyboard())
+        editText().perform(typeText(text), closeSoftKeyboard())
     }
     fun clickSaveButton() {
         onView(
@@ -62,7 +61,14 @@ class CreateNotePage {
             )
         ).perform(click())
     }
+    fun checkVisibleNow() {
+        title().check(matches(isDisplayed()))
+    }
     fun checkNotVisibleNow() {
         title().check(doesNotExist())
+    }
+    fun checkEditNote(title : String, text : String) {
+        editTitle().check(matches(withText(title)))
+        editText().check(matches(withText(text)))
     }
 }
